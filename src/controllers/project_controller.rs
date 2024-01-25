@@ -5,7 +5,7 @@ use crate::models::project_model::{CreateProject, Project};
 
 pub async fn create_project(pool: &SqlitePool, project: CreateProject) -> Result<Project> {
     let response = sqlx::query_as::<_, Project>(
-        "INSERT INTO project (name) VALUES ($1) RETURNING id, name, assigned_to",
+        "INSERT INTO project (name) VALUES ($1) RETURNING id, name",
     )
     .bind(project.name)
     .fetch_one(pool)
@@ -30,10 +30,10 @@ pub async fn project_by_id(pool: &SqlitePool, id: i32) -> Result<Project> {
 
 pub async fn update_project(pool: &SqlitePool, project: &Project) -> Result<Project> {
     let response = sqlx::query_as::<_, Project>(
-        "UPDATE project SET name = $1, assigned_to = $2 WHERE id = $3 RETURNING id, name, assigned_to",
+        "UPDATE project SET name = $1 WHERE id = $2 RETURNING id, name",
     )
     .bind(&project.name)
-    .bind(project.assigned_to)
+    // .bind(project.assigned_to)
     .bind(project.id)
     .fetch_one(pool)
     .await?;

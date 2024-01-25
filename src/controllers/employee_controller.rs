@@ -38,7 +38,6 @@ pub async fn update_employee(pool: &SqlitePool, employee: &Employee) -> Result<E
     Ok(response)
 }
 
-// FIX: This is not working.
 pub async fn delete_employee(pool: &SqlitePool, id: i32) -> Result<()> {
     sqlx::query("DELETE FROM employee WHERE id = $1")
         .bind(id)

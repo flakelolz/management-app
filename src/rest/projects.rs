@@ -12,7 +12,7 @@ pub fn projects_api() -> Router {
         .route("/", get(get_all_projects))
         .route("/", post(add_project))
         .route("/", put(update_project))
-        .route("/:id", get(project_by_id))
+        .route("/:id", get(get_project))
         .route("/:id", delete(delete_project))
 }
 
@@ -26,7 +26,7 @@ async fn get_all_projects(
     }
 }
 
-async fn project_by_id(
+async fn get_project(
     Extension(cnn): Extension<SqlitePool>,
     Path(id): Path<i32>,
 ) -> Result<Json<Project>, StatusCode> {
@@ -41,11 +41,18 @@ async fn add_project(
     Extension(cnn): Extension<SqlitePool>,
     extract::Json(create_project): extract::Json<CreateProject>,
 ) -> Result<Json<Project>, StatusCode> {
-    if let Ok(project) = project_controller::create_project(&cnn, create_project).await {
-        Ok(Json(project))
-    } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+    match project_controller::create_project(&cnn, create_project).await {
+        Ok(project) => Ok(Json(project)),
+        Err(e) => {
+            println!("Error: {:?}", e);
+            Err(StatusCode::SERVICE_UNAVAILABLE)
+        },
     }
+    // if let Ok(project) = project_controller::create_project(&cnn, create_project).await {
+    //     Ok(Json(project))
+    // } else {
+    //     Err(StatusCode::SERVICE_UNAVAILABLE)
+    // }
 }
 
 async fn update_project(
@@ -62,9 +69,9 @@ async fn update_project(
 async fn delete_project(
     Extension(cnn): Extension<SqlitePool>,
     Path(id): Path<i32>,
-) -> Result<(), StatusCode> {
-    if let Ok(()) = project_controller::delete_project(&cnn, id).await {
-        Ok(())
+) -> Result<StatusCode, StatusCode> {
+    if project_controller::delete_project(&cnn, id).await.is_ok() {
+        Ok(StatusCode::OK)
     } else {
         Err(StatusCode::SERVICE_UNAVAILABLE)
     }

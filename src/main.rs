@@ -1,6 +1,7 @@
 pub mod controllers;
 pub mod models;
 pub mod rest;
+pub mod views;
 
 use anyhow::Result;
 use axum::{Extension, Router};
@@ -44,6 +45,7 @@ pub async fn init_db() -> Result<SqlitePool> {
 /// Constructing the router in a function makes it easy to re-use in unit tests.
 fn router(connection_pool: SqlitePool) -> Router {
     Router::new()
+        .nest_service("/", views::serve::view_service())
         .nest_service("/employees", rest::employees::employees_api())
         .nest_service("/projects", rest::projects::projects_api())
         // Add the web view

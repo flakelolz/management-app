@@ -5,7 +5,7 @@ use sqlx::FromRow;
 pub struct Project {
     pub id: i32,
     pub name: String,
-    pub assigned_to: i32,
+    // pub assigned_to: i32,
 }
 
 #[derive(Serialize, Deserialize, FromRow, Clone)]

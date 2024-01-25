@@ -1,9 +1,7 @@
-use axum::{
-    extract::{self, Path},
-    http::StatusCode,
-    routing::{delete, get, post, put},
-    Extension, Json, Router,
-};
+use axum::extract::{self, Path};
+use axum::routing::{delete, post, put};
+use axum::{http::StatusCode, routing::get, Router};
+use axum::{Extension, Json};
 use sqlx::SqlitePool;
 
 use crate::controllers::employee_controller;
@@ -60,14 +58,16 @@ async fn update_employee(
     }
 }
 
-// FIX: This is not working.
 async fn delete_employee(
     Extension(cnn): Extension<SqlitePool>,
     Path(id): Path<i32>,
-) -> Result<(), StatusCode> {
-    if let Ok(()) = employee_controller::delete_employee(&cnn, id).await {
-        Ok(())
-    } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+) -> Result<StatusCode, StatusCode> {
+    match employee_controller::delete_employee(&cnn, id).await {
+        Ok(_) => Ok(StatusCode::OK),
+        Err(e) => {
+            println!("Error: {:?}", e);
+            Err(StatusCode::SERVICE_UNAVAILABLE)
+        }
     }
 }
+
