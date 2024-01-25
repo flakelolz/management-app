@@ -46,4 +46,3 @@ pub async fn delete_employee(pool: &SqlitePool, id: i32) -> Result<()> {
         .await?;
     Ok(())
 }
-

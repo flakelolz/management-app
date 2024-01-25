@@ -11,4 +11,3 @@ pub struct Employee {
 pub struct CreateEmployee {
     pub name: String,
 }
-

@@ -6,8 +6,8 @@ use axum::{
 };
 use sqlx::SqlitePool;
 
-use crate::models::employee_model::*;
 use crate::controllers::employee_controller;
+use crate::models::employee_model::*;
 
 pub fn employees_api() -> Router {
     Router::new()
@@ -40,9 +40,9 @@ async fn get_employee(
 
 async fn add_employee(
     Extension(cnn): Extension<SqlitePool>,
-    extract::Json(employee): extract::Json<CreateEmployee>,
+    extract::Json(create_employee): extract::Json<CreateEmployee>,
 ) -> Result<Json<Employee>, StatusCode> {
-    if let Ok(employee) = employee_controller::create_employee(&cnn, employee).await {
+    if let Ok(employee) = employee_controller::create_employee(&cnn, create_employee).await {
         Ok(Json(employee))
     } else {
         Err(StatusCode::SERVICE_UNAVAILABLE)
@@ -61,11 +61,13 @@ async fn update_employee(
 }
 
 // FIX: This is not working.
-async fn delete_employee(Extension(cnn): Extension<SqlitePool>, Path(id): Path<i32>) -> StatusCode {
-    if employee_controller::delete_employee(&cnn, id).await.is_ok() {
-        StatusCode::OK
+async fn delete_employee(
+    Extension(cnn): Extension<SqlitePool>,
+    Path(id): Path<i32>,
+) -> Result<(), StatusCode> {
+    if let Ok(()) = employee_controller::delete_employee(&cnn, id).await {
+        Ok(())
     } else {
-        StatusCode::SERVICE_UNAVAILABLE
+        Err(StatusCode::SERVICE_UNAVAILABLE)
     }
 }
-

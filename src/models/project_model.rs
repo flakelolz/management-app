@@ -12,4 +12,3 @@ pub struct Project {
 pub struct CreateProject {
     pub name: String,
 }
-
