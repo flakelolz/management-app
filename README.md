@@ -42,3 +42,5 @@ The following API requests are valid:
 # Database
 
 I used SQLite in memory, which means that everything added from the API after the app is running is not gong to remain after the app is closed. 
+
+If you wish to add data in a more permanent way, you can do so by writing the queries on the `sql` file inside the `migrations` folder.
