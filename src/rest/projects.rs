@@ -5,14 +5,14 @@ use axum::{Extension, Json};
 use sqlx::SqlitePool;
 
 use crate::controllers::project_controller;
-use crate::models::project_model::{CreateProject, Project};
+use crate::models::project_model::{CreateProject, Project, UpdateProject};
 
 pub fn projects_api() -> Router {
     Router::new()
         .route("/", get(get_all_projects))
         .route("/", post(add_project))
-        .route("/", put(update_project))
         .route("/:id", get(get_project))
+        .route("/:id", put(update_project))
         .route("/:id", delete(delete_project))
 }
 
@@ -48,18 +48,14 @@ async fn add_project(
             Err(StatusCode::SERVICE_UNAVAILABLE)
         },
     }
-    // if let Ok(project) = project_controller::create_project(&cnn, create_project).await {
-    //     Ok(Json(project))
-    // } else {
-    //     Err(StatusCode::SERVICE_UNAVAILABLE)
-    // }
 }
 
 async fn update_project(
     Extension(cnn): Extension<SqlitePool>,
-    extract::Json(project): extract::Json<Project>,
+    Path(id): Path<i32>,
+    extract::Json(project): extract::Json<UpdateProject>,
 ) -> Result<Json<Project>, StatusCode> {
-    if let Ok(project) = project_controller::update_project(&cnn, &project).await {
+    if let Ok(project) = project_controller::update_project(&cnn,id, &project).await {
         Ok(Json(project))
     } else {
         Err(StatusCode::SERVICE_UNAVAILABLE)

@@ -11,8 +11,8 @@ pub fn employees_api() -> Router {
     Router::new()
         .route("/", get(get_all_employees))
         .route("/", post(add_employee))
-        .route("/", put(update_employee))
         .route("/:id", get(get_employee))
+        .route("/:id", put(update_employee))
         .route("/:id", delete(delete_employee))
 }
 async fn get_all_employees(
@@ -49,12 +49,18 @@ async fn add_employee(
 
 async fn update_employee(
     Extension(cnn): Extension<SqlitePool>,
-    extract::Json(employee): extract::Json<Employee>,
+    Path(id): Path<i32>,
+    extract::Json(employee): extract::Json<UpdateEmployee>,
 ) -> Result<Json<Employee>, StatusCode> {
-    if let Ok(employee) = employee_controller::update_employee(&cnn, &employee).await {
-        Ok(Json(employee))
-    } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+    match employee_controller::update_employee(&cnn, id, &employee).await {
+        Ok(employee) => {
+            println!("Updated employee");
+            Ok(Json(employee))
+        },
+        Err(e) => {
+            println!("Error: {:?}", e);
+            Err(StatusCode::SERVICE_UNAVAILABLE)
+        },
     }
 }
 

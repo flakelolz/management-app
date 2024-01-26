@@ -12,3 +12,8 @@ pub struct Project {
 pub struct CreateProject {
     pub name: String,
 }
+
+#[derive(Serialize, Deserialize, FromRow, Clone)]
+pub struct UpdateProject {
+    pub name: String,
+}

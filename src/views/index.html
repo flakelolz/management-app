@@ -57,6 +57,8 @@
         </div>
       </div>
       <div class="row">
+        <div class="col" id="employeeInfo"></div>
+        <div class="col" id="projectInfo"></div>
       </div>
     </div>
     <script>
@@ -82,7 +84,7 @@
           <th>Name</th>
           </thead>
           <tbody>
-            ${data.map((employee) => `<tr><td>${employee.id}</td><td>${employee.name}</td></tr>`).join('')}
+            ${data.map((employee) => `<tr onclick="employeeProperties(${employee.id})"><td>${employee.id}</td><td>${employee.name}</td></tr>`).join('')}
           </tbody>
           `
       }
@@ -117,7 +119,7 @@
           <th>Name</th>
           </thead>
           <tbody>
-            ${data.map((project) => `<tr><td>${project.id}</td><td>${project.name}</td></tr>`).join('')}
+            ${data.map((project) => `<tr onclick="projectProperties(${project.id})"><td>${project.id}</td><td>${project.name}</td></tr>`).join('')}
           </tbody>
           `
       }
@@ -138,6 +140,112 @@
           })
         })
         showProjects()
+      }
+
+
+      // EMPLOYEE INFO
+      async function employeeProperties(id) {
+        const res = await fetch(baseUrl+'employees/'+id, {
+          method: 'GET'
+        })
+        const data = await res.json();
+        employeeInfo.innerHTML = ''
+        employeeInfo.innerHTML = `
+          <h2>Employee Info</h2>
+          <form>
+            <label class="form-label" for="employeeName${id}">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="employeeName"
+              placeholder="Employee Name"
+              value = "${data.name}"
+            />
+            <button type="button" id="updateEmployeeBtn" class="btn btn-success mt-3" onclick="updateEmployee(${data.id})">
+              Update
+            </button>
+
+            <button type="button" id="deleteEmployeeBtn" class="btn btn-danger mt-3" onclick="deleteEmployee(${data.id})">
+              Delete
+            </button>
+          </form>
+        `
+      }
+
+      // UPDATE EMPLOYEE
+      async function updateEmployee(id) {
+        const name = document.getElementById('employeeName').value
+        const res = await fetch(baseUrl+'employees/'+id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name
+          })
+        })
+        showEmployees()
+      }
+
+      // PROJECT INFO
+      async function projectProperties(id) {
+        const res = await fetch(baseUrl+'projects/'+id, {
+          method: 'GET'
+        })
+        const data = await res.json();
+
+        projectInfo.innerHTML = ''
+        projectInfo.innerHTML = `
+          <h2>Project Info</h2>
+          <form>
+            <label class="form-label" for="projectName${id}">Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="projectName"
+              placeholder="Employee Name"
+              value = "${data.name}"
+            />
+            <button type="button" id="updateProjectBtn" class="btn btn-success mt-3" onclick="updateProject(${data.id})">
+              Update
+            </button>
+            <button type="button" id="deleteProjectBtn" class="btn btn-danger mt-3" onclick="deleteProject(${data.id})">
+              Delete
+            </button>
+          </form>
+        `
+        console.log(data)
+      }
+
+      // UPDATE PROJECT
+      async function updateProject(id) {
+        const name = document.getElementById('projectName').value
+        const res = await fetch(baseUrl+'projects/'+id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name
+          })
+        })
+        showProjects()
+      }
+
+
+      async function deleteEmployee(id) {
+        const res = await fetch(baseUrl+'employees/'+id, {
+          method: 'DELETE'
+        })
+        showEmployees()
+        employeeInfo.innerHTML = ''
+      }
+      async function deleteProject(id) {
+        const res = await fetch(baseUrl+'projects/'+id, {
+          method: 'DELETE'
+        })
+        showProjects()
+        projectInfo.innerHTML = ''
       }
     </script>
   </body>

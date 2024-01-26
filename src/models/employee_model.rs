@@ -11,3 +11,8 @@ pub struct Employee {
 pub struct CreateEmployee {
     pub name: String,
 }
+
+#[derive(Serialize, Deserialize, FromRow, Clone)]
+pub struct UpdateEmployee {
+    pub name: String,
+}

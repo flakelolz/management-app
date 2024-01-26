@@ -1,7 +1,7 @@
 use anyhow::Result;
 use sqlx::SqlitePool;
 
-use crate::models::employee_model::{CreateEmployee, Employee};
+use crate::models::employee_model::{CreateEmployee, Employee, UpdateEmployee};
 
 pub async fn create_employee(pool: &SqlitePool, employee: CreateEmployee) -> Result<Employee> {
     let response =
@@ -27,12 +27,12 @@ pub async fn employee_by_id(pool: &SqlitePool, id: i32) -> Result<Employee> {
     Ok(response)
 }
 
-pub async fn update_employee(pool: &SqlitePool, employee: &Employee) -> Result<Employee> {
+pub async fn update_employee(pool: &SqlitePool, id: i32, employee: &UpdateEmployee) -> Result<Employee> {
     let response = sqlx::query_as::<_, Employee>(
         "UPDATE employee SET name = $1 WHERE id = $2 RETURNING id, name",
     )
     .bind(&employee.name)
-    .bind(employee.id)
+    .bind(id)
     .fetch_one(pool)
     .await?;
     Ok(response)
