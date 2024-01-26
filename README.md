@@ -1,4 +1,4 @@
-# How to open
+# How to run
 
 Since this web application is just a backend made with Rust which serves an HTML, the whole application is just a binary executable.
 
