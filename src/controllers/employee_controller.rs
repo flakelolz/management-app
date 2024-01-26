@@ -19,28 +19,28 @@ pub async fn get_all_employees(pool: &SqlitePool) -> Result<Vec<Employee>> {
     Ok(response)
 }
 
-pub async fn get_employee_by_id(pool: &SqlitePool, id: i32) -> Result<Employee> {
+pub async fn get_employee_by_id(pool: &SqlitePool, employee_id: i32) -> Result<Employee> {
     let response = sqlx::query_as::<_, Employee>("SELECT * FROM employee WHERE id = $1")
-        .bind(id)
+        .bind(employee_id)
         .fetch_one(pool)
         .await?;
     Ok(response)
 }
 
-pub async fn update_employee(pool: &SqlitePool, id: i32, employee: &UpdateEmployee) -> Result<Employee> {
+pub async fn update_employee(pool: &SqlitePool, id: i32, payload: &UpdateEmployee) -> Result<Employee> {
     let response = sqlx::query_as::<_, Employee>(
         "UPDATE employee SET name = $1 WHERE id = $2 RETURNING id, name",
     )
-    .bind(&employee.name)
+    .bind(&payload.name)
     .bind(id)
     .fetch_one(pool)
     .await?;
     Ok(response)
 }
 
-pub async fn delete_employee(pool: &SqlitePool, id: i32) -> Result<()> {
+pub async fn delete_employee(pool: &SqlitePool, employee_id: i32) -> Result<()> {
     sqlx::query("DELETE FROM employee WHERE id = $1")
-        .bind(id)
+        .bind(employee_id)
         .execute(pool)
         .await?;
     Ok(())

@@ -27,12 +27,14 @@ async fn get_all_employees(
 
 async fn get_employee(
     Extension(cnn): Extension<SqlitePool>,
-    Path(id): Path<i32>,
+    Path(employee_id): Path<i32>,
 ) -> Result<Json<Employee>, StatusCode> {
-    if let Ok(employee) = employee_controller::get_employee_by_id(&cnn, id).await {
-        Ok(Json(employee))
-    } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+    match employee_controller::get_employee_by_id(&cnn, employee_id).await {
+        Ok(employee) => Ok(Json(employee)),
+        Err(e) => {
+            println!("get_employee ERROR: {:?}", e);
+            Err(StatusCode::SERVICE_UNAVAILABLE)
+        }
     }
 }
 
@@ -40,25 +42,24 @@ async fn add_employee(
     Extension(cnn): Extension<SqlitePool>,
     extract::Json(create_employee): extract::Json<CreateEmployee>,
 ) -> Result<Json<Employee>, StatusCode> {
-    if let Ok(employee) = employee_controller::create_employee(&cnn, create_employee).await {
-        Ok(Json(employee))
-    } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+    match employee_controller::create_employee(&cnn, create_employee).await {
+        Ok(employee) => Ok(Json(employee)),
+        Err(e) => {
+            println!("add_employee ERROR: {:?}", e);
+            Err(StatusCode::SERVICE_UNAVAILABLE)
+        }
     }
 }
 
 async fn update_employee(
     Extension(cnn): Extension<SqlitePool>,
-    Path(id): Path<i32>,
+    Path(employee_id): Path<i32>,
     extract::Json(employee): extract::Json<UpdateEmployee>,
 ) -> Result<Json<Employee>, StatusCode> {
-    match employee_controller::update_employee(&cnn, id, &employee).await {
-        Ok(employee) => {
-            println!("Updated employee");
-            Ok(Json(employee))
-        }
+    match employee_controller::update_employee(&cnn, employee_id, &employee).await {
+        Ok(employee) => Ok(Json(employee)),
         Err(e) => {
-            println!("Error: {:?}", e);
+            println!("update_employee ERROR: {:?}", e);
             Err(StatusCode::SERVICE_UNAVAILABLE)
         }
     }
@@ -66,25 +67,25 @@ async fn update_employee(
 
 async fn delete_employee(
     Extension(cnn): Extension<SqlitePool>,
-    Path(id): Path<i32>,
+    Path(employee_id): Path<i32>,
 ) -> Result<StatusCode, StatusCode> {
-    let tasks = tasks_controller::task_by_employee_id(&cnn, id).await;
+    let tasks = tasks_controller::task_by_employee_id(&cnn, employee_id).await;
     match tasks {
         Ok(tasks) => {
             for task in tasks {
                 match tasks_controller::delete_task(&cnn, task.id).await {
                     Ok(_) => (),
-                    Err(e) => println!("Error: {:?}", e),
+                    Err(e) => println!("delete_task ERROR: {:?}", e),
                 }
             }
         }
-        Err(e) => println!("Error: {:?}", e),
+        Err(e) => println!("task_by_project_id ERROR: {:?}", e),
     }
 
-    match employee_controller::delete_employee(&cnn, id).await {
+    match employee_controller::delete_employee(&cnn, employee_id).await {
         Ok(_) => Ok(StatusCode::OK),
         Err(e) => {
-            println!("Error: {:?}", e);
+            println!("delete_employee ERROR: {:?}", e);
             Err(StatusCode::SERVICE_UNAVAILABLE)
         }
     }

@@ -26,7 +26,7 @@ async fn main() -> Result<()> {
     println!("->> http://localhost:3001/             => Home page");
     println!("->> http://localhost:3001/employees    => All employees");
     println!("->> http://localhost:3001/projects     => All projects");
-    println!("->> http://localhost:3001/tasks        => All tasks");
+    println!("->> http://localhost:3001/tasks        => All tasks\n");
 
     // Run the server
     axum::Server::bind(&addr)

@@ -19,21 +19,25 @@ pub fn projects_api() -> Router {
 async fn get_all_projects(
     Extension(cnn): Extension<SqlitePool>,
 ) -> Result<Json<Vec<Project>>, StatusCode> {
-    if let Ok(projects) = project_controller::all_projects(&cnn).await {
-        Ok(Json(projects))
-    } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+     match project_controller::all_projects(&cnn).await {
+        Ok(projects) => Ok(Json(projects)),
+        Err(e) => {
+            println!("get_all_projects ERROR: {:?}", e);
+            Err(StatusCode::SERVICE_UNAVAILABLE)
+        }
     }
 }
 
 async fn get_project(
     Extension(cnn): Extension<SqlitePool>,
-    Path(id): Path<i32>,
+    Path(project_id): Path<i32>,
 ) -> Result<Json<Project>, StatusCode> {
-    if let Ok(project) = project_controller::project_by_id(&cnn, id).await {
-        Ok(Json(project))
-    } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+    match project_controller::project_by_id(&cnn, project_id).await {
+        Ok(project) => Ok(Json(project)),
+        Err(e) => {
+            println!("get_project ERROR: {:?}", e);
+            Err(StatusCode::SERVICE_UNAVAILABLE)
+        }
     }
 }
 
@@ -44,7 +48,7 @@ async fn add_project(
     match project_controller::create_project(&cnn, create_project).await {
         Ok(project) => Ok(Json(project)),
         Err(e) => {
-            println!("Error: {:?}", e);
+            println!("add_project ERROR: {:?}", e);
             Err(StatusCode::SERVICE_UNAVAILABLE)
         }
     }
@@ -52,37 +56,39 @@ async fn add_project(
 
 async fn update_project(
     Extension(cnn): Extension<SqlitePool>,
-    Path(id): Path<i32>,
+    Path(project_id): Path<i32>,
     extract::Json(project): extract::Json<UpdateProject>,
 ) -> Result<Json<Project>, StatusCode> {
-    if let Ok(project) = project_controller::update_project(&cnn, id, &project).await {
-        Ok(Json(project))
-    } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+    match project_controller::update_project(&cnn, project_id, &project).await {
+        Ok(project) => Ok(Json(project)),
+        Err(e) => {
+            println!("update_project ERROR: {:?}", e);
+            Err(StatusCode::SERVICE_UNAVAILABLE)
+        }
     }
 }
 
 async fn delete_project(
     Extension(cnn): Extension<SqlitePool>,
-    Path(id): Path<i32>,
+    Path(project_id): Path<i32>,
 ) -> Result<StatusCode, StatusCode> {
-    let tasks = tasks_controller::task_by_project_id(&cnn, id).await;
+    let tasks = tasks_controller::task_by_project_id(&cnn, project_id).await;
     match tasks {
         Ok(tasks) => {
             for task in tasks {
                 match tasks_controller::delete_task(&cnn, task.id).await {
                     Ok(_) => (),
-                    Err(e) => println!("Error: {:?}", e),
+                    Err(e) => println!("delete_task ERROR: {:?}", e),
                 }
             }
         }
-        Err(e) => println!("Error: {:?}", e),
+        Err(e) => println!("task_by_project_id ERROR: {:?}", e),
     }
 
-    match project_controller::delete_project(&cnn, id).await {
+    match project_controller::delete_project(&cnn, project_id).await {
         Ok(_) => Ok(StatusCode::OK),
         Err(e) => {
-            println!("Error: {:?}", e);
+            println!("delete_project ERROR: {:?}", e);
             Err(StatusCode::SERVICE_UNAVAILABLE)
         }
     }
