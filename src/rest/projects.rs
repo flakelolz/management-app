@@ -4,7 +4,7 @@ use axum::{http::StatusCode, routing::get, Router};
 use axum::{Extension, Json};
 use sqlx::SqlitePool;
 
-use crate::controllers::project_controller;
+use crate::controllers::{project_controller, tasks_controller};
 use crate::models::project_model::{CreateProject, Project, UpdateProject};
 
 pub fn projects_api() -> Router {
@@ -46,7 +46,7 @@ async fn add_project(
         Err(e) => {
             println!("Error: {:?}", e);
             Err(StatusCode::SERVICE_UNAVAILABLE)
-        },
+        }
     }
 }
 
@@ -55,7 +55,7 @@ async fn update_project(
     Path(id): Path<i32>,
     extract::Json(project): extract::Json<UpdateProject>,
 ) -> Result<Json<Project>, StatusCode> {
-    if let Ok(project) = project_controller::update_project(&cnn,id, &project).await {
+    if let Ok(project) = project_controller::update_project(&cnn, id, &project).await {
         Ok(Json(project))
     } else {
         Err(StatusCode::SERVICE_UNAVAILABLE)
@@ -66,9 +66,24 @@ async fn delete_project(
     Extension(cnn): Extension<SqlitePool>,
     Path(id): Path<i32>,
 ) -> Result<StatusCode, StatusCode> {
-    if project_controller::delete_project(&cnn, id).await.is_ok() {
-        Ok(StatusCode::OK)
-    } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+    let tasks = tasks_controller::task_by_project_id(&cnn, id).await;
+    match tasks {
+        Ok(tasks) => {
+            for task in tasks {
+                match tasks_controller::delete_task(&cnn, task.id).await {
+                    Ok(_) => (),
+                    Err(e) => println!("Error: {:?}", e),
+                }
+            }
+        }
+        Err(e) => println!("Error: {:?}", e),
+    }
+
+    match project_controller::delete_project(&cnn, id).await {
+        Ok(_) => Ok(StatusCode::OK),
+        Err(e) => {
+            println!("Error: {:?}", e);
+            Err(StatusCode::SERVICE_UNAVAILABLE)
+        }
     }
 }

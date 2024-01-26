@@ -69,8 +69,8 @@
       const addProjectBtn = document.getElementById('addProjectBtn');
       const projectTable = document.getElementById('projectTable');
 
-
       const baseUrl = 'http://localhost:3001/';
+
 
       // SHOW EMPLOYEES
       async function showEmployees() {
@@ -141,7 +141,6 @@
         })
         showProjects()
       }
-
 
       // EMPLOYEE INFO
       async function employeeProperties(id) {
@@ -232,7 +231,7 @@
         showProjects()
       }
 
-
+      // DELETE EMPLOYEE
       async function deleteEmployee(id) {
         const res = await fetch(baseUrl+'employees/'+id, {
           method: 'DELETE'
@@ -240,6 +239,8 @@
         showEmployees()
         employeeInfo.innerHTML = ''
       }
+
+      // DELETE PROJECT
       async function deleteProject(id) {
         const res = await fetch(baseUrl+'projects/'+id, {
           method: 'DELETE'

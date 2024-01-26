@@ -12,14 +12,14 @@ pub async fn create_employee(pool: &SqlitePool, employee: CreateEmployee) -> Res
     Ok(response)
 }
 
-pub async fn all_employees(pool: &SqlitePool) -> Result<Vec<Employee>> {
+pub async fn get_all_employees(pool: &SqlitePool) -> Result<Vec<Employee>> {
     let response = sqlx::query_as::<_, Employee>("SELECT * FROM employee")
         .fetch_all(pool)
         .await?;
     Ok(response)
 }
 
-pub async fn employee_by_id(pool: &SqlitePool, id: i32) -> Result<Employee> {
+pub async fn get_employee_by_id(pool: &SqlitePool, id: i32) -> Result<Employee> {
     let response = sqlx::query_as::<_, Employee>("SELECT * FROM employee WHERE id = $1")
         .bind(id)
         .fetch_one(pool)

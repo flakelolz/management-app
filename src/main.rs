@@ -22,10 +22,11 @@ async fn main() -> Result<()> {
 
     // Start the server
     println!("->> LISTENING on {addr}\n");
-    println!("->> Endpoints");
-    println!("->> http://localhost:3001/ - Home page");
-    println!("->> http://localhost:3001/employees");
-    println!("->> http://localhost:3001/projects");
+    println!("### Endpoints");
+    println!("->> http://localhost:3001/             => Home page");
+    println!("->> http://localhost:3001/employees    => All employees");
+    println!("->> http://localhost:3001/projects     => All projects");
+    println!("->> http://localhost:3001/tasks        => All tasks");
 
     // Run the server
     axum::Server::bind(&addr)
@@ -53,6 +54,7 @@ fn router(connection_pool: SqlitePool) -> Router {
         // Add the REST APIs
         .nest_service("/employees", rest::employees::employees_api())
         .nest_service("/projects", rest::projects::projects_api())
+        .nest_service("/tasks", rest::tasks::assigned_api())
         // Add the connection pool as a "layer", available for dependency injection
         .layer(Extension(connection_pool))
 }
