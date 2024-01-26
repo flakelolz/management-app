@@ -2,7 +2,8 @@
 
 Since this web application is just a backend made with Rust which serves an HTML, the whole application is just a binary executable.
 
-Go to the `Releases` section of this repository to download the executable.
+Go to the Releases section of this repository to download the executable.
+https://github.com/flakelolz/management-app/releases/tag/v0.0.1
 
 Otherwise, you can build it from source if you have Rust and cargo (Rust's toolchain) installed. For that you'll need to:
 - Go to Rust's main page - https://www.rust-lang.org/learn/get-started
@@ -37,3 +38,7 @@ The following API requests are valid:
 	- For employees the JSON will need `name: string`
 	- For projects the JSON will need `name: string`
 - `DELETE` to `/employees/:id` or `/projects/:id` will delete the item that matches the `id` given.
+
+# Database
+
+I used SQLite in memory, which means that everything added from the API after the app is running is not gong to remain after the app is closed. 
