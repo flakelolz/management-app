@@ -3,7 +3,7 @@ pub mod models;
 pub mod rest;
 
 use anyhow::Result;
-use axum::{Extension, Router, routing::get, response::Html};
+use axum::{response::Html, routing::get, Extension, Router};
 use sqlx::SqlitePool;
 use std::net::SocketAddr;
 
@@ -34,7 +34,6 @@ async fn main() -> Result<()> {
         .await
         .unwrap();
     Ok(())
-
 }
 
 // Create a database connection pool. Run any migrations.

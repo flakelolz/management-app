@@ -19,7 +19,7 @@ pub fn projects_api() -> Router {
 async fn get_all_projects(
     Extension(cnn): Extension<SqlitePool>,
 ) -> Result<Json<Vec<Project>>, StatusCode> {
-     match project_controller::all_projects(&cnn).await {
+    match project_controller::all_projects(&cnn).await {
         Ok(projects) => Ok(Json(projects)),
         Err(e) => {
             println!("get_all_projects ERROR: {:?}", e);
