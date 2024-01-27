@@ -2,8 +2,10 @@
 
 Since this web application is just a backend made with Rust which serves an HTML, the whole application is just a binary executable.
 
-Go to the Releases section of this repository to download the executable.
+Go to the `Releases` section of this repository to download the executable.
 https://github.com/flakelolz/management-app/releases/tag/v0.0.2
+
+
 
 Otherwise, you can build it from source if you have Rust and cargo (Rust's toolchain) installed. For that you'll need to:
 - Go to Rust's main page - https://www.rust-lang.org/learn/get-started
@@ -21,7 +23,7 @@ On the main page you add employees or projects, click an employee or project on 
 For the APIs there's the following endpoints:
 - `http://localhost:3001/employees`
 - `http://localhost:3001/projects`
-- `http://localhost:3001/employees/:employee_id``
+- `http://localhost:3001/employees/:employee_id`
 - `http://localhost:3001/projects/:project_id`
 - `http://localhost:3001/tasks`
 - `http://localhost:3001/tasks/:task_id`
@@ -30,6 +32,7 @@ For the APIs there's the following endpoints:
 - `http://localhost:3001/tasks/employee/employee_id/not`
 
 With this endpoints you can perform CRUD operations from a tool that allows you to send request like https://hoppscotch.io/
+
 
 # API
 
