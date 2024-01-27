@@ -11,7 +11,7 @@
 
 <body>
   <div class="container">
-    <div class="row">
+    <div class="row mt-5">
       <div class="col">
         <h3>Add Employee</h3>
         <form class="mb-5">
@@ -220,7 +220,7 @@
       employeeInfo.innerHTML = `
           <h2>Employee Info</h2>
           <form>
-            <label class="form-label" for="employeeName${id}">Name</label>
+            <label class="form-label" for="employeeName"><b>Name</b></label>
             <input
               type="text"
               class="form-control"
@@ -229,13 +229,13 @@
               value = "${data.name}"
             />
 
-            <label class="form-label mt-3" for="assignTask">Assign Project</label>
+            <label class="form-label mt-3" for="assignTask"><b>Assign Project (ID)</b></label>
             <select id="assignEmployeeTask" class="form-select" name="Assign Task" >
               <option selected>None</option>
               ${projectInfo.map((task) => `<option>${task.id}</option>`).join('')}
             </select>
 
-            <label class="form-label mt-3" for="removeTask">Remove Project</label>
+            <label class="form-label mt-3" for="removeTask"><b>Remove Project (ID)</b></label>
             <select id="removeEmployeeTask" class="form-select" name="Remove Task" >
               <option selected>None</option>
               ${taskInfo.map((task) => `<option>${task.id}</option>`).join('')}
@@ -303,7 +303,7 @@
       projectInfo.innerHTML = `
           <h2>Project Info</h2>
           <form>
-            <label class="form-label" for="projectName${id}">Name</label>
+            <label class="form-label" for="projectName"><b>Name</b></label>
             <input
               type="text"
               class="form-control"
