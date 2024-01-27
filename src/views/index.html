@@ -94,6 +94,8 @@
       })
       employeeInput.value = ''
       showEmployees()
+      resetInfo()
+
     }
 
 
@@ -164,6 +166,7 @@
       })
       projectInput.value = ''
       showProjects()
+      resetInfo()
     }
 
     // EMPLOYEE INFO
@@ -187,6 +190,18 @@
         notAssignedJson = await notAssignedTaskData.json();
         notAssignedTaskInfo.push(notAssignedJson)
       }
+
+      const projects = await fetch(baseUrl + 'projects', {
+        method: 'GET'
+      })
+      const projectsJson = await projects.json();
+
+      let projectInfo = []
+      for (let i = 0; i < projectsJson.length; i++) {
+        projectInfo.push(projectsJson[i])
+      }
+
+
 
       // Get assigned tasks information
       const assignedTask = await fetch(baseUrl + 'tasks/employee/' + id, {
@@ -219,7 +234,7 @@
             <label class="form-label mt-3" for="assignTask">Assign Project</label>
             <select id="assignEmployeeTask" class="form-select" name="Assign Task" >
               <option selected>None</option>
-              ${notAssignedTaskInfo.map((task) => `<option>${task.id}</option>`).join('')}
+              ${projectInfo.map((task) => `<option>${task.id}</option>`).join('')}
             </select>
 
             <label class="form-label mt-3" for="removeTask">Remove Project</label>
@@ -340,6 +355,13 @@
       })
       showProjects()
       projectInfo.innerHTML = ''
+    }
+
+    // RESET Info
+    function resetInfo() {
+      employeeInfo.innerHTML = ''
+      projectInfo.innerHTML = ''
+      taskInfo.innerHTML = ''
     }
   </script>
 </body>
