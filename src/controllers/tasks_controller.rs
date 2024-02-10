@@ -84,6 +84,15 @@ pub async fn delete_all_employee_tasks(pool: &SqlitePool, employee_id: i32) -> R
     Ok(response)
 }
 
+pub async fn delete_all_project_tasks(pool: &SqlitePool, project_id: i32) -> Result<Vec<Tasks>> {
+    let response =
+        sqlx::query_as::<_, Tasks>("DELETE FROM tasks WHERE project_id = $1 RETURNING *")
+            .bind(project_id)
+            .fetch_all(pool)
+            .await?;
+    Ok(response)
+}
+
 pub async fn delete_task_by_employee_and_project_id(
     pool: &SqlitePool,
     employee_id: i32,

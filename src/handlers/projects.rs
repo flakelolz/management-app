@@ -71,17 +71,9 @@ async fn delete_project(
     Extension(cnn): Extension<SqlitePool>,
     Path(project_id): Path<i32>,
 ) -> Result<(StatusCode, Json<Project>), (StatusCode, Json<String>)> {
-    let tasks = tasks_controller::task_by_project_id(&cnn, project_id).await;
-    match tasks {
-        Ok(tasks) => {
-            for task in tasks {
-                match tasks_controller::delete_task(&cnn, task.id).await {
-                    Ok(_) => (),
-                    Err(e) => println!("delete_task ERROR: {:?}", e),
-                }
-            }
-        }
-        Err(e) => println!("task_by_project_id ERROR: {:?}", e),
+    match tasks_controller::delete_all_project_tasks(&cnn, project_id).await {
+        Ok(_) => (),
+        Err(e) => println!("delete_all_project_tasks ERROR: {:?}", e),
     }
 
     match project_controller::delete_project(&cnn, project_id).await {
