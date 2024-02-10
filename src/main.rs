@@ -1,6 +1,6 @@
 pub mod controllers;
 pub mod models;
-pub mod rest;
+pub mod handlers;
 
 use anyhow::Result;
 use axum::{response::Html, routing::get, Extension, Router};
@@ -51,9 +51,9 @@ fn router(connection_pool: SqlitePool) -> Router {
         // Add the web view
         .nest_service("/", view_service())
         // Add the REST APIs
-        .nest_service("/employees", rest::employees::employees_api())
-        .nest_service("/projects", rest::projects::projects_api())
-        .nest_service("/tasks", rest::tasks::assigned_api())
+        .nest_service("/employees", handlers::employees::employees_api())
+        .nest_service("/projects", handlers::projects::projects_api())
+        .nest_service("/tasks", handlers::tasks::assigned_api())
         // Add the connection pool as a "layer", available for dependency injection
         .layer(Extension(connection_pool))
 }
