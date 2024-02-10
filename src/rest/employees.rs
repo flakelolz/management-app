@@ -16,6 +16,7 @@ pub fn employees_api() -> Router {
                 .delete(delete_employee),
         )
 }
+
 async fn get_all_employees(
     Extension(cnn): Extension<SqlitePool>,
 ) -> Result<(StatusCode, Json<Vec<Employee>>), StatusCode> {

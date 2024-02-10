@@ -43,9 +43,10 @@ pub async fn update_employee(
 }
 
 pub async fn delete_employee(pool: &SqlitePool, employee_id: i32) -> Result<Employee> {
-    let response = sqlx::query_as::<_, Employee>("DELETE FROM employee WHERE id = $1 RETURNING id, name")
-        .bind(employee_id)
-        .fetch_one(pool)
-        .await?;
+    let response =
+        sqlx::query_as::<_, Employee>("DELETE FROM employee WHERE id = $1 RETURNING id, name")
+            .bind(employee_id)
+            .fetch_one(pool)
+            .await?;
     Ok(response)
 }

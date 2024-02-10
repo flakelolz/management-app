@@ -42,10 +42,11 @@ pub async fn update_project(
     Ok(response)
 }
 
-pub async fn delete_project(pool: &SqlitePool, project_id: i32) -> Result<()> {
-    sqlx::query("DELETE FROM project WHERE id = $1")
-        .bind(project_id)
-        .execute(pool)
-        .await?;
-    Ok(())
+pub async fn delete_project(pool: &SqlitePool, project_id: i32) -> Result<Project> {
+    let response =
+        sqlx::query_as::<_, Project>("DELETE FROM project WHERE id = $1 RETURNING id, name")
+            .bind(project_id)
+            .fetch_one(pool)
+            .await?;
+    Ok(response)
 }
