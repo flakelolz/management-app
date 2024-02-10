@@ -71,17 +71,9 @@ async fn delete_employee(
     Extension(cnn): Extension<SqlitePool>,
     Path(employee_id): Path<i32>,
 ) -> Result<(StatusCode, Json<Employee>), (StatusCode, Json<String>)> {
-    let tasks = tasks_controller::task_by_employee_id(&cnn, employee_id).await;
-    match tasks {
-        Ok(tasks) => {
-            for task in tasks {
-                match tasks_controller::delete_task(&cnn, task.id).await {
-                    Ok(_) => (),
-                    Err(e) => println!("delete_task ERROR: {:?}", e),
-                }
-            }
-        }
-        Err(e) => println!("task_by_project_id ERROR: {:?}", e),
+    match tasks_controller::delete_all_employee_tasks(&cnn, employee_id).await {
+        Ok(_) => (),
+        Err(e) => println!("delete_all_employee_tasks ERROR: {:?}", e),
     }
 
     match employee_controller::delete_employee(&cnn, employee_id).await {

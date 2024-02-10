@@ -1,5 +1,5 @@
 use axum::extract::{self, Path};
-use axum::routing::{delete, post, put};
+use axum::routing::delete;
 use axum::{http::StatusCode, routing::get, Router};
 use axum::{Extension, Json};
 use sqlx::SqlitePool;
@@ -9,16 +9,16 @@ use crate::models::tasks_model::*;
 
 pub fn assigned_api() -> Router {
     Router::new()
-        .route("/", get(get_all_tasks))
-        .route("/", post(create_task))
-        .route("/:id", get(get_task_by_id))
-        .route("/:id", put(update_task))
-        .route("/:id", delete(delete_task))
+        .route("/", get(get_all_tasks).post(create_task))
+        .route(
+            "/:id",
+            get(get_task_by_id).put(update_task).delete(delete_task),
+        )
         .route("/employee/:id", get(get_task_by_employee_id))
         .route("/employee/:id/not", get(get_not_assigned_tasks))
         .route("/project/:id", get(get_task_by_project_id))
         .route(
-            "/employee/:id/task/:id",
+            "/employee/:id/project/:id",
             delete(delete_task_by_employee_passing_id),
         )
 }
@@ -30,7 +30,7 @@ async fn get_all_tasks(
         Ok(tasks) => Ok(Json(tasks)),
         Err(e) => {
             println!("get_all_tasks ERROR: {:?}", e);
-            Err(StatusCode::SERVICE_UNAVAILABLE)
+            Err(StatusCode::BAD_REQUEST)
         }
     }
 }
@@ -43,7 +43,7 @@ async fn get_task_by_id(
         Ok(task) => Ok(Json(task)),
         Err(e) => {
             println!("get_task_by_id ERROR: {:?}", e);
-            Err(StatusCode::SERVICE_UNAVAILABLE)
+            Err(StatusCode::BAD_REQUEST)
         }
     }
 }
@@ -56,7 +56,7 @@ async fn get_task_by_employee_id(
         Ok(task) => Ok(Json(task)),
         Err(e) => {
             println!("get_task_by_employee_id ERROR: {:?}", e);
-            Err(StatusCode::SERVICE_UNAVAILABLE)
+            Err(StatusCode::BAD_REQUEST)
         }
     }
 }
@@ -69,7 +69,7 @@ async fn get_task_by_project_id(
         Ok(task) => Ok(Json(task)),
         Err(e) => {
             println!("get_task_by_project_id ERROR: {:?}", e);
-            Err(StatusCode::SERVICE_UNAVAILABLE)
+            Err(StatusCode::BAD_REQUEST)
         }
     }
 }
@@ -83,7 +83,7 @@ async fn get_not_assigned_tasks(
         Ok(task) => Ok(Json(task)),
         Err(e) => {
             println!("get_task_by_project_id ERROR: {:?}", e);
-            Err(StatusCode::SERVICE_UNAVAILABLE)
+            Err(StatusCode::BAD_REQUEST)
         }
     }
 }
@@ -91,12 +91,12 @@ async fn get_not_assigned_tasks(
 async fn create_task(
     Extension(cnn): Extension<SqlitePool>,
     extract::Json(create_task): extract::Json<CreateTask>,
-) -> Result<Json<Tasks>, StatusCode> {
+) -> Result<(StatusCode, Json<Tasks>), StatusCode> {
     match tasks_controller::create_task(&cnn, create_task).await {
-        Ok(task) => Ok(Json(task)),
+        Ok(task) => Ok((StatusCode::CREATED, Json(task))),
         Err(e) => {
             println!("create_task ERROR: {:?}", e);
-            Err(StatusCode::SERVICE_UNAVAILABLE)
+            Err(StatusCode::BAD_REQUEST)
         }
     }
 }
@@ -110,7 +110,7 @@ async fn update_task(
         Ok(task) => Ok(Json(task)),
         Err(e) => {
             println!("update_task ERROR: {:?}", e);
-            Err(StatusCode::SERVICE_UNAVAILABLE)
+            Err(StatusCode::BAD_REQUEST)
         }
     }
 }
@@ -118,12 +118,12 @@ async fn update_task(
 async fn delete_task(
     Extension(cnn): Extension<SqlitePool>,
     Path(id): Path<i32>,
-) -> Result<StatusCode, StatusCode> {
+) -> Result<(StatusCode, Json<Tasks>), StatusCode> {
     match tasks_controller::delete_task(&cnn, id).await {
-        Ok(_) => Ok(StatusCode::OK),
+        Ok(task) => Ok((StatusCode::OK, Json(task))),
         Err(e) => {
             println!("delete_task ERROR: {:?}", e);
-            Err(StatusCode::SERVICE_UNAVAILABLE)
+            Err(StatusCode::BAD_REQUEST)
         }
     }
 }
@@ -131,12 +131,14 @@ async fn delete_task(
 async fn delete_task_by_employee_passing_id(
     Extension(cnn): Extension<SqlitePool>,
     Path((employee_id, project_id)): Path<(i32, i32)>,
-) -> Result<StatusCode, StatusCode> {
-    match tasks_controller::delete_task_by_employee_task_id(&cnn, employee_id, project_id).await {
-        Ok(_) => Ok(StatusCode::OK),
+) -> Result<(StatusCode, Json<Vec<Tasks>>), StatusCode> {
+    match tasks_controller::delete_task_by_employee_and_project_id(&cnn, employee_id, project_id)
+        .await
+    {
+        Ok(tasks) => Ok((StatusCode::OK, Json(tasks))),
         Err(e) => {
             println!("delete_task_by_employee_passing_id ERROR: {:?}", e);
-            Err(StatusCode::SERVICE_UNAVAILABLE)
+            Err(StatusCode::BAD_REQUEST)
         }
     }
 }
