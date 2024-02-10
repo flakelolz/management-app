@@ -22,7 +22,7 @@ async fn get_all_projects(
         Ok(projects) => Ok((StatusCode::OK, Json(projects))),
         Err(e) => {
             println!("get_all_projects ERROR: {:?}", e);
-            Err((StatusCode::SERVICE_UNAVAILABLE, Json(e.to_string())))
+            Err((StatusCode::BAD_REQUEST, Json(e.to_string())))
         }
     }
 }
@@ -35,7 +35,7 @@ async fn get_project(
         Ok(project) => Ok((StatusCode::OK, Json(project))),
         Err(e) => {
             println!("get_project ERROR: {:?}", e);
-            Err((StatusCode::SERVICE_UNAVAILABLE, Json(e.to_string())))
+            Err((StatusCode::BAD_REQUEST, Json(e.to_string())))
         }
     }
 }

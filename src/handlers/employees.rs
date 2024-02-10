@@ -23,7 +23,7 @@ async fn get_all_employees(
     if let Ok(employees) = employee_controller::get_all_employees(&cnn).await {
         Ok((StatusCode::OK, Json(employees)))
     } else {
-        Err(StatusCode::SERVICE_UNAVAILABLE)
+        Err(StatusCode::BAD_REQUEST)
     }
 }
 
@@ -35,7 +35,7 @@ async fn get_employee(
         Ok(employee) => Ok((StatusCode::OK, Json(employee))),
         Err(e) => {
             println!("get_employee ERROR: {:?}", e);
-            Err((StatusCode::SERVICE_UNAVAILABLE, Json(e.to_string())))
+            Err((StatusCode::BAD_REQUEST, Json(e.to_string())))
         }
     }
 }
