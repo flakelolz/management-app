@@ -59,8 +59,11 @@ If you wish to add data in a more permanent way, you can do so by writing the qu
 
 # DISCLAIMER
 
-Most things are working how they should but assigning and removing projects from an employee shows the Project ID instead of the name.
-The frontend wouldn't have been a headache if I knew how to use a good framework for it.
+Originally, I only had 2 days to finish this and my lack of experience didn't allow me to make a good frontend so I'm figuring out
+what solution I should use, HTMX or React app, at the moment. This was a project to get selected for a 2-month long unpaid internship.
+
+Most things are working how they should but assigning and removing projects from an employee shows the Project ID instead of the name,
+in the selection element.
 
 The Backend fine, except for me trying and failing to create a SQL Query that finds all the projects that aren't assigned to an employee.
 
