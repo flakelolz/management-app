@@ -1,5 +1,4 @@
-pub mod controllers;
-pub mod models;
+pub mod database;
 pub mod handlers;
 
 use anyhow::Result;

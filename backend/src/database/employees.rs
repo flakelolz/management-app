@@ -1,7 +1,7 @@
 use anyhow::Result;
 use sqlx::SqlitePool;
 
-use crate::models::employee_model::{CreateEmployee, Employee, UpdateEmployee};
+use crate::database::models::employee::{CreateEmployee, Employee, UpdateEmployee};
 
 pub async fn create_employee(pool: &SqlitePool, employee: CreateEmployee) -> Result<Employee> {
     let response =
