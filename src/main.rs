@@ -5,7 +5,7 @@ pub mod handlers;
 use anyhow::Result;
 use axum::{response::Html, routing::get, Extension, Router};
 use sqlx::SqlitePool;
-use std::net::SocketAddr;
+use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -18,10 +18,10 @@ async fn main() -> Result<()> {
     // Initialize the Axum routing service
     let app = router(connection_pool);
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3001));
+    let listener = TcpListener::bind("127.0.0.1:3001").await?;
 
     // Start the server
-    println!("->> LISTENING on {addr}\n");
+    println!("->> LISTENING on http://{}\n", listener.local_addr()?);
     println!("### Endpoints");
     println!("->> http://localhost:3001/             => Home page");
     println!("->> http://localhost:3001/employees    => All employees");
@@ -29,8 +29,8 @@ async fn main() -> Result<()> {
     println!("->> http://localhost:3001/tasks        => All tasks\n");
 
     // Run the server
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+    axum::
+        serve(listener, app.into_make_service())
         .await
         .unwrap();
     Ok(())
