@@ -1,3 +1,3 @@
-pub mod employee_model;
-pub mod project_model;
-pub mod tasks_model;
+pub mod employee;
+pub mod project;
+pub mod task;
