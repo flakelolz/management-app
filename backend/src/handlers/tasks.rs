@@ -5,7 +5,7 @@ use axum::{Extension, Json};
 use sqlx::SqlitePool;
 
 use crate::database::tasks;
-use crate::models::task::*;
+use crate::database::models::task::*;
 
 pub fn assigned_api() -> Router {
     Router::new()

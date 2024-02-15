@@ -1,7 +1,7 @@
 use anyhow::Result;
 use sqlx::SqlitePool;
 
-use crate::models::project::{CreateProject, Project, UpdateProject};
+use crate::database::models::project::{CreateProject, Project, UpdateProject};
 
 pub async fn create_project(pool: &SqlitePool, project: CreateProject) -> Result<Project> {
     let response =

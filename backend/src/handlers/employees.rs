@@ -4,7 +4,7 @@ use axum::{Extension, Json};
 use sqlx::SqlitePool;
 
 use crate::database::{employees, tasks};
-use crate::models::employee::*;
+use crate::database::models::employee::*;
 
 pub fn employees_api() -> Router {
     Router::new()

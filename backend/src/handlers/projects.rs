@@ -4,7 +4,7 @@ use axum::{Extension, Json};
 use sqlx::SqlitePool;
 
 use crate::database::{projects, tasks};
-use crate::models::project::{CreateProject, Project, UpdateProject};
+use crate::database::models::project::{CreateProject, Project, UpdateProject};
 
 pub fn projects_api() -> Router {
     Router::new()

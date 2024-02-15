@@ -1,7 +1,7 @@
 use anyhow::Result;
 use sqlx::SqlitePool;
 
-use crate::models::task::{CreateTask, Tasks, UpdateTask};
+use crate::database::models::task::{CreateTask, Tasks, UpdateTask};
 
 pub async fn create_task(pool: &SqlitePool, payload: CreateTask) -> Result<Tasks> {
     let response =
