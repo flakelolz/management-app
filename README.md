@@ -1,18 +1,25 @@
+# DISCLAIMER
+
+Originally, I only had 2 days to finish this project and my lack of experience didn't allow me to make a good frontend so I'm figuring out
+what solution I should use, HTMX or React, at the moment. The frontend was a simple index.html file with a script tag at the bottom and javascript to fetch and display data.
+
+This was a project to get selected for a 2-month long unpaid internship. I got selected.
+
 # How to run
 
 Since this web application is just a backend made with Rust which serves an HTML, the whole application is just a binary executable.
 
 Go to the `Releases` section of this repository to download the executable.
-https://github.com/flakelolz/management-app/releases/tag/v0.0.2
-
-
+https://github.com/flakelolz/management-app/releases/
 
 Otherwise, you can build it from source if you have Rust and cargo (Rust's toolchain) installed. For that you'll need to:
 - Go to Rust's main page - https://www.rust-lang.org/learn/get-started
 - Download and install `Rustup` to get the Rust toolchain
 - Download the source code of this repository
-- In your terminal, navigate to the app folder, (Where the `cargo.toml` is)
-- Run the `cargo run` command in your CLI
+- In your terminal, navigate to the backend folder (Where the `cargo.toml` is)
+- Run the `cargo run` command in your CLI to run the backend
+
+For the frontend, it still working from an html file served by the backend
 
 # How to use the app
 
@@ -56,14 +63,4 @@ The following API requests are valid:
 I used SQLite in memory, which means that everything added from the API after the app is running is not gong to remain after the app is closed. 
 
 If you wish to add data in a more permanent way, you can do so by writing the queries on the `sql` file inside the `migrations` folder.
-
-# DISCLAIMER
-
-Originally, I only had 2 days to finish this and my lack of experience didn't allow me to make a good frontend so I'm figuring out
-what solution I should use, HTMX or React app, at the moment. This was a project to get selected for a 2-month long unpaid internship.
-
-Most things are working how they should but assigning and removing projects from an employee shows the Project ID instead of the name,
-in the selection element.
-
-The Backend fine, except for me trying and failing to create a SQL Query that finds all the projects that aren't assigned to an employee.
 
