@@ -8,8 +8,8 @@ use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Load enviroment variables from .env if available
-    dotenv::dotenv().ok();
+    // Set the database URL
+    std::env::set_var("DATABASE_URL", "sqlite::memory:");
 
     // Initialize the database and obtain a connection pool
     let connection_pool = init_db().await?;
