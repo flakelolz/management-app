@@ -3,8 +3,8 @@ use axum::{http::StatusCode, routing::get, Router};
 use axum::{Extension, Json};
 use sqlx::SqlitePool;
 
-use crate::database::{employees, tasks};
 use crate::database::models::employee::*;
+use crate::database::{employees, tasks};
 
 pub fn employees_api() -> Router {
     Router::new()

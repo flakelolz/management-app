@@ -4,8 +4,8 @@ use axum::{http::StatusCode, routing::get, Router};
 use axum::{Extension, Json};
 use sqlx::SqlitePool;
 
-use crate::database::tasks;
 use crate::database::models::task::*;
+use crate::database::tasks;
 
 pub fn assigned_api() -> Router {
     Router::new()
@@ -132,9 +132,7 @@ async fn delete_task_by_employee_passing_id(
     Extension(cnn): Extension<SqlitePool>,
     Path((employee_id, project_id)): Path<(i32, i32)>,
 ) -> Result<(StatusCode, Json<Vec<Tasks>>), (StatusCode, Json<String>)> {
-    match tasks::delete_task_by_employee_and_project_id(&cnn, employee_id, project_id)
-        .await
-    {
+    match tasks::delete_task_by_employee_and_project_id(&cnn, employee_id, project_id).await {
         Ok(tasks) => Ok((StatusCode::OK, Json(tasks))),
         Err(e) => {
             println!("delete_task_by_employee_passing_id ERROR: {:?}", e);

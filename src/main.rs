@@ -28,8 +28,7 @@ async fn main() -> Result<()> {
     println!("->> http://localhost:3001/tasks        => All tasks\n");
 
     // Run the server
-    axum::
-        serve(listener, app.into_make_service())
+    axum::serve(listener, app.into_make_service())
         .await
         .unwrap();
     Ok(())
