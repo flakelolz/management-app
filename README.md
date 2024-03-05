@@ -21,6 +21,9 @@ Otherwise, you can build it from source if you have Rust and cargo (Rust's toolc
 
 For the frontend, it still working from an html file served by the backend
 
+![image](https://github.com/flakelolz/management-app/assets/41105999/d0b52ecb-d845-4925-9971-211d47a41204)
+
+
 # How to use the app
 
 This is an example for management app that deals with employees and projects for a company. The main page is located on `http://localhost:3001/`. 
