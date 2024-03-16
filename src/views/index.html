@@ -282,7 +282,7 @@
 
       const removeTask = document.getElementById('removeEmployeeTask').value
       if (removeTask !== 'None') {
-        await fetch(baseUrl + `tasks/employee/${id}/task/` + removeTask, {
+        await fetch(baseUrl + `tasks/employee/${id}/project/` + removeTask, {
           method: 'DELETE'
         })
       }
