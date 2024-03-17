@@ -2,7 +2,11 @@ pub mod database;
 pub mod handlers;
 
 use anyhow::Result;
-use axum::{response::Html, routing::get, Extension, Router};
+use axum::{
+    response::{Html, IntoResponse},
+    routing::get,
+    Extension, Router,
+};
 use sqlx::SqlitePool;
 use tokio::net::TcpListener;
 
@@ -57,11 +61,18 @@ fn router(connection_pool: SqlitePool) -> Router {
 }
 
 pub fn view_service() -> Router {
-    Router::new().route("/", get(index_page))
+    Router::new()
+        .route("/", get(index_page))
+        .route("/script.js", get(script))
 }
 
 const INDEX_PAGE: &str = include_str!("views/index.html");
+const SCRIPT: &str = include_str!("views/script.js");
 
 async fn index_page() -> Html<&'static str> {
     Html(INDEX_PAGE)
+}
+
+async fn script() -> impl IntoResponse {
+    String::from(SCRIPT)
 }
